@@ -1,2 +1,10 @@
 # venv
 .venv
+
+# data
+data/*
+!data/.gitkeep
+
+# log
+log/*
+!log/.gitkeep
