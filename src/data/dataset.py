@@ -10,12 +10,11 @@ import random
 from src.utils.seeds import worker_init_fn, generator
 
 class CalcDataset(torch.utils.data.Dataset):
-    def __init__(self, data_num, word2id, id2word, train=True):
+    def __init__(self, data_num, word2id, train=True):
         super().__init__()
 
         self.data_num = data_num
         self.word2id = word2id
-        self.id2word = id2word
         self.train = train
 
         self.data, self.label = [], []
@@ -62,13 +61,10 @@ def get_id2word(word2id):
     id2word = {v: k for k, v in word2id.items()}
     return id2word
     
-def create_dataset(train_data_num, test_data_num, batch_size):
+def create_dataset(train_data_num, test_data_num, batch_size, word2id):
 
-    word2id = get_word2id()
-    id2word = get_id2word(word2id)
-
-    train_dataset = CalcDataset(train_data_num, word2id, id2word, train=True)
-    test_dataset = CalcDataset(test_data_num, word2id, id2word, train=False)
+    train_dataset = CalcDataset(train_data_num, word2id, train=True)
+    test_dataset = CalcDataset(test_data_num, word2id, train=False)
 
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True,
                               num_workers=2, pin_memory=True, worker_init_fn=worker_init_fn,)
