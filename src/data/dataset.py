@@ -68,7 +68,7 @@ def create_dataset(train_data_num, test_data_num, batch_size, word2id):
 
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True,
                               num_workers=2, pin_memory=True, worker_init_fn=worker_init_fn,)
-    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False,
+    test_loader = DataLoader(test_dataset, batch_size=1, shuffle=False,
                              num_workers=2, pin_memory=True, worker_init_fn=worker_init_fn,)
     
     return train_loader, test_loader
