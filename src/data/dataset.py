@@ -16,12 +16,15 @@ class CalcDataset(torch.utils.data.Dataset):
         self.data_num = data_num
         self.word2id = word2id
         self.train = train
+        self.numbers = list("0123456789")
+        self.operators = ['+']
 
         self.data, self.label = [], []
         for _ in range(data_num):
-            x = int("".join([random.choice(list("0123456789")) for _ in range(random.randint(1, 3))])) # 0 ~ 999
-            y = int("".join([random.choice(list("0123456789")) for _ in range(random.randint(1, 3))])) # 0 ~ 999
-            left = ("{:*<7s}".format(str(x) + "+" + str(y))).replace("*", "<pad>")
+            x = int("".join([random.choice(self.numbers) for _ in range(random.randint(1, 3))])) # 0 ~ 999
+            y = int("".join([random.choice(self.numbers) for _ in range(random.randint(1, 3))])) # 0 ~ 999
+            op = random.choice(self.operators)
+            left = ("{:*<7s}".format(str(x) + op + str(y))).replace("*", "<pad>")
             self.data.append(self.transform(left, seq_len=7))
             
             z = x + y
