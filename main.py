@@ -16,7 +16,7 @@ from sklearn.metrics import accuracy_score
 from src.utils.seeds import fix_seed
 from src.data.dataset import create_dataset, get_word2id, get_id2word
 from src.models.models import Encoder, Decoder
-from src.models.coachs import CoachTrain, CoachTest, Coach
+from src.models.coachs import Coach
 from src.visualization.visualize import plot
 
 def main():
