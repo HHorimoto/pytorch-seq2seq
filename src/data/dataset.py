@@ -10,22 +10,28 @@ import random
 from src.utils.seeds import worker_init_fn, generator
 
 class CalcDataset(torch.utils.data.Dataset):
-    def __init__(self, data_num, word2id, train=True):
+    def __init__(self, data_num, word2id, train_data=True):
         super().__init__()
 
         self.data_num = data_num
         self.word2id = word2id
-        self.train = train
+        self.train_data = train_data
         self.numbers = list("0123456789")
         self.operators = ['+']
 
         self.data, self.label = [], []
-        for _ in range(data_num):
+        count = 0
+        while count < data_num:
             x = int("".join([random.choice(self.numbers) for _ in range(random.randint(1, 3))])) # 0 ~ 999
             y = int("".join([random.choice(self.numbers) for _ in range(random.randint(1, 3))])) # 0 ~ 999
             op = random.choice(self.operators)
             left = ("{:*<7s}".format(str(x) + op + str(y))).replace("*", "<pad>")
-            self.data.append(self.transform(left, seq_len=7))
+            left = self.transform(left, seq_len=7)
+            if self.train_data is not None:
+                matches = np.all(self.train_data == np.asarray(left), axis=1)
+                if np.any(matches):
+                    continue
+            self.data.append(left)
             
             z = x + y
             right = ("{:*<6s}".format(str(z))).replace("*", "<pad>")
@@ -34,6 +40,7 @@ class CalcDataset(torch.utils.data.Dataset):
             right[right.index(10)] = 12
             self.label.append(right)
 
+            count += 1
         self.data = np.asarray(self.data)
         self.label = np.asarray(self.label)
 
@@ -66,8 +73,8 @@ def get_id2word(word2id):
     
 def create_dataset(train_data_num, test_data_num, batch_size, word2id):
 
-    train_dataset = CalcDataset(train_data_num, word2id, train=True)
-    test_dataset = CalcDataset(test_data_num, word2id, train=False)
+    train_dataset = CalcDataset(train_data_num, word2id, train_data=None)
+    test_dataset = CalcDataset(test_data_num, word2id, train_data=train_dataset.data)
 
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True,
                               num_workers=2, pin_memory=True, worker_init_fn=worker_init_fn,)
