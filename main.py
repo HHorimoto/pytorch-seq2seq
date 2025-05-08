@@ -28,7 +28,7 @@ def main():
     NUM_EPOCH = config_file['config']['num_epoch']
     BATCH_SIZE = config_file['config']['batch_size']
     LR = config_file['config']['learning_rate']
-    OPERATOR = config_file['config']['operator']
+    OPs = config_file['config']['operators']
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -36,7 +36,7 @@ def main():
     id2word = get_id2word(word2id)
 
     train_loader, test_loader = create_dataset(train_data_num=20000, test_data_num=200, batch_size=BATCH_SIZE, 
-                                               word2id=word2id, operator=OPERATOR)
+                                               word2id=word2id, operators=OPs)
     
     vocab_size = len(word2id)
     encoder_train = Encoder(vocab_size=vocab_size, embedding_dim=16, hidden_dim=128, 
